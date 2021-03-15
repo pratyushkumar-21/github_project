@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+
+{% block body %}
+
+
+<div class="container">
+  <div class="row">
+
+    <div class="col">
+      <div class="">
+        <div class="card shadow" style="width: 18rem;">
+          <img src="{{data.avatar_url}}" class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">{{data.name}}</h5>
+            <p class="card-text">Followers : {{data.followers}}</p>
+            <p class="card-text">Following : {{data.following}}</p>
+            <a href="/accounts/logout/" class="btn btn-primary">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <div class="container">
+        <p class="pt-5">Contribution activity</p>
+        <hr>
+        <div class="table-responsive">
+          <table class="table table-sm shadow" id="event-container">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">Actor</th>
+                <th scope="col">Type</th>
+                <th scope="col">Repo</th>
+                <th scope="col">Created At</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script type="text/javascript">
+  var page = 1
+  var flag = true
+
+  function load_data(query) {
+    fetch("https://api.github.com/users/{{data.login}}/events?page=" + query)
+      .then(resp_json => {
+        return resp_json.json()
+      })
+      .then(resp_data => {
+        if (resp_data.length == 0) {
+          flag = false
+        } else {
+          resp_data.map(value => {
+            var table = document.getElementById("event-container");
+            var row_count = table.rows.length;
+            var row = table.insertRow(row_count);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            var cell4 = row.insertCell(3);
+            cell1.innerHTML = "<small>" + value.actor.login + "</small>";
+            cell2.innerHTML = "<small>" + value.type + "</small>";
+            cell3.innerHTML = "<small>" + value.repo.name + "</small>";
+            cell4.innerHTML = "<small>" + value.created_at + "</small>";
+          })
+        }
+
+      })
+      .catch(error => {
+        flag = false
+      })
+  }
+
+  $(document).ready(function() {
+    load_data(page)
+    $(window).scroll(function() {
+      if (($(window).scrollTop() >= $("body").height() - $(window).height())) {
+        page += 1
+        if (flag) {
+          load_data(page)
+        }
+      }
+    })
+
+  });
+</script>
+
+
+
+{% endblock %}

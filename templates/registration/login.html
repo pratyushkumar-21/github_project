@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+{% extends './../base.html' %}
+
+{% block body %}
+
+<div class="container">
+  <div class="card shadow mx-auto" style="width: 18rem;">
+    <div class="card-body mx-auto">
+        <p class="text-center"><a href="{% url 'social:begin' 'github' %}" class="text-decoration-none "><i class="fa fa-github" style="font-size:60px;color:black;"></i> <span class="h-5">Github Login</span></a></p>
+        {% if msg %}
+          <li style="color:red;"><small>{{msg}}</small></li>
+        {% endif %}
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}
